@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>92 TEAM - VIP Color Trading & Gaming</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Orbitron -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Orbitron', 'monospace'],
+                    },
+                    colors: {
+                        darkBg: '#0b0d13',
+                        cardBg: '#141824',
+                        cardLight: '#1c2233',
+                        goldPrimary: '#f5b027',
+                        goldDark: '#b87d0b',
+                        vipRed: '#ef4444',
+                        vipGreen: '#10b981',
+                        vipViolet: '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050608;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .app-shell {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #0b0d13;
+            position: relative;
+            box-shadow: 0 0 50px rgba(245, 176, 39, 0.08);
+            padding-bottom: 80px;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #fce38a 0%, #f5b027 50%, #c48208 100%);
+        }
+        .gold-text {
+            background: linear-gradient(135deg, #fce38a 0%, #f5b027 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-border {
+            border: 1px solid rgba(245, 176, 39, 0.15);
+        }
+        .glass-modal {
+            background: rgba(20, 24, 36, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(245, 176, 39, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3548;
+            border-radius: 4px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(245, 176, 39, 0.3); }
+            50% { box-shadow: 0 0 24px rgba(245, 176, 39, 0.7); }
+        }
+        .glow-btn {
+            animation: pulseGlow 2.5s infinite;
+        }
+        .sidebar-drawer {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell" id="app">
+
+    <!-- ==================== CUSTOM TOAST NOTIFICATION ==================== -->
+    <div id="toast-box" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-[420px] hidden transition-all duration-300">
+        <div id="toast-content" class="bg-cardLight border border-goldPrimary/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+            <i id="toast-icon" class="fas fa-info-circle text-goldPrimary text-lg"></i>
+            <span id="toast-msg">Notification message</span>
+        </div>
+    </div>
+
+    <!-- ==================== AUTHENTICATION SCREEN (LOGIN / REGISTER) ==================== -->
+    <div id="auth-screen" class="min-h-screen flex flex-col justify-between p-6 bg-gradient-to-b from-[#141824] to-[#0b0d13]">
+        <div>
+            <!-- Top Logo -->
+            <div class="text-center pt-8 pb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl gold-gradient text-black text-3xl font-extrabold shadow-lg mb-3">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-wider gold-text font-mono">92 TEAM</h1>
+                <p class="text-xs text-gray-400 mt-1">Pakistan's #1 VIP Color Trading Platform</p>
+            </div>
+
+            <!-- Auth Tabs -->
+            <div class="grid grid-cols-2 bg-cardBg p-1 rounded-xl card-border mb-6">
+                <button id="tab-login-btn" onclick="switchAuthMode('login')" class="py-2.5 text-sm font-bold rounded-lg gold-gradient text-black transition">
+                    <i class="fas fa-sign-in-alt mr-1"></i> Login
+                </button>
+                <button id="tab-register-btn" onclick="switchAuthMode('register')" class="py-2.5 text-sm font-bold rounded-lg text-gray-400 hover:text-white transition">
+                    <i class="fas fa-user-plus mr-1"></i> Register
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Mobile Number</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary font-semibold text-sm">
+                            <i class="fas fa-phone-alt"></i>
+                        </span>
+                        <input type="text" id="login-phone" required placeholder="03001234567" class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="login-pass" required placeholder="Enter password" class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl gold-gradient text-black font-extrabold text-sm tracking-wide shadow-lg glow-btn mt-2">
+                    LOGIN TO ACCOUNT
+                </button>
+
+                <!-- Quick Demo Login Helpers -->
+                <div class="pt-4 border-t border-gray-800/80 text-center space-y-2">
+                    <p class="text-[11px] text-gray-400">Quick Demo Access:</p>
+                    <div class="flex gap-2 justify-center">
+                        <button type="button" onclick="quickDemoLogin('user')" class="px-3 py-1.5 bg-cardLight hover:bg-gray-700 text-xs rounded-lg text-goldPrimary border border-goldPrimary/30">
+                            <i class="fas fa-user mr-1"></i> Demo User
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Full Name</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" id="reg-name" required placeholder="Ali Khan" class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Mobile Number</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary text-xs font-bold">
+                            +92
+                        </span>
+                        <input type="tel" id="reg-phone" required placeholder="03001234567" class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-11 pr-4 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Set Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <input type="password" id="reg-pass" required placeholder="Minimum 6 characters" class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-10 pr-4 py-3 text-sm text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5 ml-1">Invitation Code (Auto-filled)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-goldPrimary">
+                            <i class="fas fa-gift"></i>
+                        </span>
+                        <input type="text" id="reg-invite" value="46465332291" required class="w-full bg-cardBg border border-gray-700 focus:border-goldPrimary rounded-xl pl-10 pr-4 py-3 text-sm text-goldPrimary font-mono outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl gold-gradient text-black font-extrabold text-sm tracking-wide shadow-lg glow-btn">
+                    CREATE FREE ACCOUNT (+Rs. 20 BONUS)
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-[11px] text-gray-500 mt-6">
+            92 TEAM &bull; Cross-Device Cloud Sync &bull; Instant JazzCash
+        </p>
+    </div>
+
+    <!-- ==================== MAIN LOGGED-IN APP INTERFACE ==================== -->
+    <div id="main-interface" class="hidden">
+
+        <!-- TOP STICKY HEADER -->
+        <header class="sticky top-0 z-30 bg-[#0b0d13]/95 backdrop-blur-md border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- 3-Line Hamburger Sidebar Button -->
+                <button onclick="toggleSidebar(true)" class="text-goldPrimary text-xl p-1 focus:outline-none hover:opacity-80 transition">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg gold-gradient flex items-center justify-center text-black font-bold text-sm">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <span class="font-mono font-extrabold text-base gold-text tracking-wide">92 TEAM</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="bg-cardBg border border-goldPrimary/30 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                    <i class="fas fa-wallet text-goldPrimary text-xs"></i>
+                    <span class="text-xs font-bold text-white">Rs. <span id="header-balance">0.00</span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==================== SIDEBAR DRAWER (3-LINE MENU) ==================== -->
+        <div id="sidebar-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 hidden transition-opacity" onclick="toggleSidebar(false)"></div>
+        <div id="sidebar-drawer" class="fixed inset-y-0 left-0 w-80 max-w-[85%] bg-cardBg border-r border-goldPrimary/30 z-50 transform -translate-x-full sidebar-drawer flex flex-col justify-between shadow-2xl">
+            <div>
+                <div class="p-5 border-b border-gray-800 flex items-center justify-between bg-darkBg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl gold-gradient flex items-center justify-center text-black font-extrabold text-xl">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h4 id="sidebar-user-name" class="font-bold text-white text-sm">User Name</h4>
+                            <p id="sidebar-user-phone" class="text-xs text-gray-400 font-mono">03000000000</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleSidebar(false)" class="text-gray-400 hover:text-white p-2">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Sidebar Navigation Links -->
+                <div class="p-4 space-y-2 text-sm">
+                    <button onclick="toggleSidebar(false); switchTab('dashboard')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-goldPrimary transition">
+                        <i class="fas fa-home w-5 text-goldPrimary"></i> Dashboard
+                    </button>
+                    <button onclick="toggleSidebar(false); switchTab('game')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-goldPrimary transition">
+                        <i class="fas fa-gamepad w-5 text-goldPrimary"></i> Win Go Game
+                    </button>
+                    <button onclick="toggleSidebar(false); switchTab('customGames')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-goldPrimary transition">
+                        <i class="fas fa-cubes w-5 text-goldPrimary"></i> Custom Games
+                    </button>
+                    <button onclick="toggleSidebar(false); switchTab('wallet'); openWalletSub('deposit')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-goldPrimary transition">
+                        <i class="fas fa-arrow-down-circle w-5 text-goldPrimary"></i> Deposit (JazzCash)
+                    </button>
+                    <button onclick="toggleSidebar(false); switchTab('wallet'); openWalletSub('withdraw')" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-vipRed transition">
+                        <i class="fas fa-arrow-up-circle w-5 text-vipRed"></i> Withdrawal (Min Rs. 500)
+                    </button>
+                    <button onclick="toggleSidebar(false); openAiAssistantModal()" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-cardLight text-gray-300 hover:text-vipGreen transition">
+                        <i class="fas fa-robot w-5 text-vipGreen"></i> 24/7 AI Support Chat
+                    </button>
+                    <button onclick="toggleSidebar(false); promptAdminLogin()" class="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-400 transition border border-red-500/30">
+                        <i class="fas fa-shield-alt w-5"></i> Admin Control Panel
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-800 bg-darkBg">
+                <button onclick="handleLogout()" class="w-full py-3 rounded-xl bg-cardLight hover:bg-gray-700 text-gray-300 font-bold text-xs flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt text-red-400"></i> Logout Account
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 1: CLEAN DASHBOARD ==================== -->
+        <section id="view-dashboard" class="p-4 space-y-4">
+            <!-- Balance Card -->
+            <div class="rounded-2xl gold-gradient p-5 text-black shadow-lg">
+                <p class="text-xs font-bold uppercase opacity-80">Total Wallet Balance</p>
+                <h2 class="text-3xl font-extrabold mt-1">Rs. <span id="dash-main-bal">0.00</span></h2>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="switchTab('wallet'); openWalletSub('deposit')" class="flex-1 py-2.5 rounded-xl bg-black text-goldPrimary font-bold text-xs shadow flex items-center justify-center gap-1.5">
+                        <i class="fas fa-arrow-down"></i> Deposit
+                    </button>
+                    <button onclick="switchTab('wallet'); openWalletSub('withdraw')" class="flex-1 py-2.5 rounded-xl bg-black/20 text-black font-bold text-xs flex items-center justify-center gap-1.5">
+                        <i class="fas fa-arrow-up"></i> Withdraw
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Action Shortcuts -->
+            <div class="grid grid-cols-4 gap-2.5">
+                <button onclick="switchTab('game')" class="bg-cardBg card-border p-3 rounded-2xl text-center hover:border-goldPrimary transition flex flex-col items-center justify-center gap-1.5">
+                    <div class="w-10 h-10 rounded-xl gold-gradient text-black flex items-center justify-center text-base font-bold shadow">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-200">Win Go</span>
+                </button>
+                <button onclick="switchTab('customGames')" class="bg-cardBg card-border p-3 rounded-2xl text-center hover:border-goldPrimary transition flex flex-col items-center justify-center gap-1.5">
+                    <div class="w-10 h-10 rounded-xl bg-blue-950 text-blue-400 flex items-center justify-center text-base font-bold shadow">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-200">Custom</span>
+                </button>
+                <button onclick="switchTab('promo')" class="bg-cardBg card-border p-3 rounded-2xl text-center hover:border-goldPrimary transition flex flex-col items-center justify-center gap-1.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-950 text-vipGreen flex items-center justify-center text-base font-bold shadow">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-200">Invite</span>
+                </button>
+                <button onclick="openAiAssistantModal()" class="bg-cardBg card-border p-3 rounded-2xl text-center hover:border-goldPrimary transition flex flex-col items-center justify-center gap-1.5">
+                    <div class="w-10 h-10 rounded-xl bg-purple-950 text-vipViolet flex items-center justify-center text-base font-bold shadow">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-200">AI Chat</span>
+                </button>
+            </div>
+
+            <!-- Rating & Active Members Stats Bar -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-cardBg card-border rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-goldPrimary/20 text-goldPrimary flex items-center justify-center text-lg font-extrabold">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold">Platform Rating</p>
+                        <p class="text-sm font-extrabold text-white">4.9 / 5.0 <span class="text-[10px] text-goldPrimary font-normal">(4.5+)</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-cardBg card-border rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-950/80 text-vipGreen flex items-center justify-center text-lg font-extrabold">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold">Active Members</p>
+                        <p class="text-sm font-extrabold text-vipGreen">68,410+ <span class="text-[10px] text-gray-400 font-normal">Online</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Announcement Marquee -->
+            <div class="bg-cardBg card-border rounded-xl px-3 py-2.5 flex items-center gap-2.5 text-xs">
+                <i class="fas fa-bullhorn text-goldPrimary animate-pulse"></i>
+                <marquee class="text-gray-300 font-medium" scrollamount="4">
+                    Welcome to 92 TEAM! Cross-device Firebase sync enabled. JazzCash deposit (03286504660) is active 24/7. &bull; Minimum withdrawal is Rs. 500.
+                </marquee>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: WIN GO GAME LOBBY ==================== -->
+        <section id="view-game" class="p-4 space-y-4 hidden">
+            <!-- Game Mode Selector (30s / 1m) -->
+            <div class="grid grid-cols-2 gap-2 bg-cardBg p-1.5 rounded-2xl card-border">
+                <button id="mode-30s-btn" onclick="setGameDuration(30)" class="py-2.5 rounded-xl gold-gradient text-black font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                    <i class="fas fa-bolt"></i> Win Go 30 Sec
+                </button>
+                <button id="mode-60s-btn" onclick="setGameDuration(60)" class="py-2.5 rounded-xl text-gray-400 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                    <i class="fas fa-clock"></i> Win Go 1 Min
+                </button>
+            </div>
+
+            <!-- Period & Timer Card -->
+            <div class="bg-gradient-to-r from-[#1c2233] to-[#141824] card-border rounded-2xl p-4 flex items-center justify-between shadow-md">
+                <div>
+                    <div class="flex items-center gap-1.5 text-xs text-goldPrimary font-semibold">
+                        <i class="fas fa-dice"></i>
+                        <span id="game-mode-label">Win Go 30s</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-1">Period ID</p>
+                    <p id="period-id" class="font-mono text-sm font-bold text-white tracking-wider">20261113001</p>
+                </div>
+
+                <div class="text-right">
+                    <p class="text-[11px] text-gray-400 mb-1">Time Remaining</p>
+                    <div class="flex items-center gap-1 font-mono text-xl font-extrabold">
+                        <span class="bg-darkBg border border-goldPrimary/40 text-goldPrimary px-2 py-1 rounded-lg" id="timer-min">00</span>
+                        <span class="text-goldPrimary">:</span>
+                        <span class="bg-darkBg border border-goldPrimary/40 text-goldPrimary px-2 py-1 rounded-lg" id="timer-sec">30</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Betting Board -->
+            <div class="bg-cardBg card-border rounded-2xl p-4 space-y-4 relative">
+                <!-- Lock Overlay during last 5 seconds -->
+                <div id="bet-lock-overlay" class="hidden absolute inset-0 bg-darkBg/85 backdrop-blur-xs z-20 rounded-2xl flex flex-col items-center justify-center">
+                    <div class="text-4xl font-mono font-extrabold text-goldPrimary animate-bounce" id="lock-countdown">5</div>
+                    <p class="text-xs text-gray-300 mt-1 font-semibold">Drawing Result... Please Wait</p>
+                </div>
+
+                <!-- Color Buttons -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <button onclick="openBetModal('Green', 'color', 2)" class="py-3 rounded-xl bg-vipGreen hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-emerald-950/50 flex flex-col items-center">
+                        <span>Green</span>
+                        <span class="text-[10px] opacity-80 font-normal">2x Payout</span>
+                    </button>
+                    <button onclick="openBetModal('Violet', 'color', 4.5)" class="py-3 rounded-xl bg-vipViolet hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-purple-950/50 flex flex-col items-center">
+                        <span>Violet</span>
+                        <span class="text-[10px] opacity-80 font-normal">4.5x Payout</span>
+                    </button>
+                    <button onclick="openBetModal('Red', 'color', 2)" class="py-3 rounded-xl bg-vipRed hover:opacity-90 text-white font-bold text-sm shadow-lg shadow-red-950/50 flex flex-col items-center">
+                        <span>Red</span>
+                        <span class="text-[10px] opacity-80 font-normal">2x Payout</span>
+                    </button>
+                </div>
+
+                <!-- Big / Small Buttons -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="openBetModal('Big', 'size', 2)" class="py-3 rounded-xl bg-amber-600 hover:opacity-90 text-white font-bold text-sm shadow-lg flex flex-col items-center">
+                        <span>Big (5-9)</span>
+                        <span class="text-[10px] opacity-80 font-normal">2x Payout</span>
+                    </button>
+                    <button onclick="openBetModal('Small', 'size', 2)" class="py-3 rounded-xl bg-blue-600 hover:opacity-90 text-white font-bold text-sm shadow-lg flex flex-col items-center">
+                        <span>Small (0-4)</span>
+                        <span class="text-[10px] opacity-80 font-normal">2x Payout</span>
+                    </button>
+                </div>
+
+                <!-- Numbers Grid -->
+                <div class="bg-darkBg/70 p-3 rounded-xl border border-gray-800">
+                    <p class="text-[11px] text-gray-400 mb-2 text-center">Select Exact Number (9x Payout)</p>
+                    <div class="grid grid-cols-5 gap-2.5" id="number-buttons-grid">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- History & My Bets -->
+            <div class="bg-cardBg card-border rounded-2xl overflow-hidden">
+                <div class="grid grid-cols-2 border-b border-gray-800">
+                    <button id="hist-tab-game" onclick="switchHistoryTab('game')" class="py-3 text-xs font-bold text-goldPrimary border-b-2 border-goldPrimary bg-cardLight/50">
+                        Game History
+                    </button>
+                    <button id="hist-tab-my" onclick="switchHistoryTab('my')" class="py-3 text-xs font-bold text-gray-400 hover:text-white">
+                        My Bets
+                    </button>
+                </div>
+
+                <div id="game-history-container" class="p-3">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="text-gray-400 border-b border-gray-800">
+                                <th class="pb-2">Period</th>
+                                <th class="pb-2 text-center">Number</th>
+                                <th class="pb-2 text-right">Color</th>
+                            </tr>
+                        </thead>
+                        <tbody id="game-history-body" class="divide-y divide-gray-800/60"></tbody>
+                    </table>
+                </div>
+
+                <div id="my-bets-container" class="p-3 hidden">
+                    <div id="my-bets-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: CUSTOM GAMES ==================== -->
+        <section id="view-customGames" class="p-4 space-y-4 hidden">
+            <div class="bg-cardBg card-border rounded-2xl p-4">
+                <h3 class="font-bold text-white text-sm">Custom Admin Games</h3>
+                <p class="text-xs text-gray-400">Play games added by admin via HTML code.</p>
+            </div>
+            <div id="custom-games-list" class="space-y-3">
+                <div class="bg-cardBg card-border p-6 rounded-2xl text-center text-gray-400 text-xs">
+                    No custom games published yet. Admin can add games from Admin Panel.
+                </div>
+            </div>
+        </section>
+
+        <!-- PLAY CUSTOM GAME MODAL -->
+        <div id="playCustomGameModal" class="fixed inset-0 bg-darkBg/95 z-50 hidden flex flex-col p-4">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-800">
+                <h3 id="playGameTitle" class="font-bold text-white text-base">Game Title</h3>
+                <button onclick="closePlayCustomGame()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="playGameContainer" class="flex-1 overflow-y-auto py-4"></div>
+        </div>
+
+        <!-- ==================== TAB 3: PROMOTION / REFERRAL ==================== -->
+        <section id="view-promo" class="p-4 space-y-4 hidden">
+            <div class="rounded-2xl bg-gradient-to-br from-[#231d10] via-[#141824] to-[#141824] card-border p-5 text-center">
+                <span class="px-3 py-1 rounded-full bg-goldPrimary/20 text-goldPrimary text-xs font-bold">AGENT PARTNER PROGRAM</span>
+                <h2 class="text-xl font-extrabold text-white mt-2">Invite Friends & Earn Daily</h2>
+                <p class="text-xs text-gray-400 mt-1">Earn instant referral commission on every trade your team makes.</p>
+
+                <div class="grid grid-cols-2 gap-3 mt-5">
+                    <div class="bg-darkBg/90 p-3.5 rounded-xl border border-gray-800">
+                        <p class="text-[11px] text-gray-400">Total Team Members</p>
+                        <p id="promo-team-count" class="text-2xl font-extrabold text-goldPrimary mt-1">0</p>
+                    </div>
+                    <div class="bg-darkBg/90 p-3.5 rounded-xl border border-gray-800">
+                        <p class="text-[11px] text-gray-400">Total Commission</p>
+                        <p class="text-2xl font-extrabold text-vipGreen mt-1">Rs. <span id="promo-commission">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-cardBg card-border rounded-2xl p-4 space-y-3">
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">Your Invitation Code</label>
+                    <div class="flex items-center justify-between bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5">
+                        <span id="user-invite-code" class="font-mono font-bold text-goldPrimary tracking-widest text-sm">------</span>
+                        <button onclick="copyInviteCode()" class="text-xs bg-cardLight hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold">
+                            <i class="fas fa-copy mr-1"></i> Copy Code
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-gray-400 block mb-1">Your Invitation Link</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="user-invite-link" readonly class="w-full bg-darkBg border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-gray-300 outline-none">
+                        <button onclick="copyInviteLink()" class="shrink-0 gold-gradient text-black font-bold text-xs px-4 py-2.5 rounded-xl shadow">
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: WALLET ==================== -->
+        <section id="view-wallet" class="p-4 space-y-4 hidden">
+            <div class="rounded-2xl gold-gradient p-5 text-black shadow-lg">
+                <p class="text-xs font-bold uppercase opacity-80">Wallet Balance</p>
+                <h2 class="text-3xl font-extrabold mt-1">Rs. <span id="wallet-main-balance">0.00</span></h2>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="openWalletSub('deposit')" id="wallet-btn-deposit" class="flex-1 py-2.5 rounded-xl bg-black text-goldPrimary font-bold text-xs shadow">
+                        <i class="fas fa-arrow-down mr-1"></i> Deposit
+                    </button>
+                    <button onclick="openWalletSub('withdraw')" id="wallet-btn-withdraw" class="flex-1 py-2.5 rounded-xl bg-black/20 text-black font-bold text-xs">
+                        <i class="fas fa-arrow-up mr-1"></i> Withdraw
+                    </button>
+                </div>
+            </div>
+
+            <!-- DEPOSIT BOX (JazzCash 03286504660) -->
+            <div id="wallet-deposit-box" class="bg-cardBg card-border rounded-2xl p-4 space-y-4">
+                <h3 class="text-sm font-bold text-goldPrimary flex items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> JazzCash Deposit (03286504660)
+                </h3>
+
+                <div class="bg-darkBg border border-dashed border-goldPrimary/50 rounded-xl p-3.5 text-xs space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Account Title:</span>
+                        <span class="font-bold text-white">92 TEAM OFFICIAL</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400">JazzCash Number:</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-extrabold text-goldPrimary text-sm">03286504660</span>
+                            <button type="button" onclick="copyAdminAccount()" class="text-[11px] gold-gradient text-black font-bold px-2.5 py-1 rounded-lg shadow">
+                                <i class="fas fa-copy mr-1"></i>Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="handleDepositSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Amount (PKR)</label>
+                        <input type="number" id="dep-amount" min="100" required placeholder="Min Rs. 100" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Transaction ID (TID)</label>
+                        <input type="text" id="dep-tid" required placeholder="Enter TID from SMS" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl gold-gradient text-black font-extrabold text-xs tracking-wide shadow">
+                        SUBMIT DEPOSIT REQUEST (FIREBASE SYNC)
+                    </button>
+                </form>
+            </div>
+
+            <!-- WITHDRAW BOX (Min Rs. 500) -->
+            <div id="wallet-withdraw-box" class="bg-cardBg card-border rounded-2xl p-4 space-y-4 hidden">
+                <h3 class="text-sm font-bold text-goldPrimary flex items-center gap-2">
+                    <i class="fas fa-money-bill-wave"></i> Request Withdrawal (Min Rs. 500)
+                </h3>
+                <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Account Title</label>
+                        <input type="text" id="with-name" required placeholder="JazzCash Account Title" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Mobile Number</label>
+                        <input type="tel" id="with-account" required placeholder="03XXXXXXXXX" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Amount (Min Rs. 500)</label>
+                        <input type="number" id="with-amount" min="500" required placeholder="Enter amount (Min 500)" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-vipRed hover:bg-red-600 text-white font-extrabold text-xs tracking-wide shadow">
+                        SUBMIT WITHDRAWAL REQUEST
+                    </button>
+                </form>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="bg-cardBg card-border rounded-2xl p-4">
+                <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <i class="fas fa-history text-goldPrimary"></i> Live Transaction History
+                </h3>
+                <div id="user-tx-history" class="space-y-2.5 text-xs"></div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: ADMIN CONTROL PANEL ==================== -->
+        <section id="view-admin" class="p-4 space-y-4 hidden">
+            <div class="bg-gradient-to-r from-red-950 to-[#141824] border border-red-500/30 rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded font-bold uppercase">Super Admin</span>
+                    <h2 class="text-lg font-extrabold text-white mt-1">Cross-Device Control Center</h2>
+                    <p class="text-xs text-gray-400">Firebase Live Real-time Sync Active</p>
+                </div>
+                <i class="fas fa-shield-alt text-3xl text-red-400"></i>
+            </div>
+
+            <!-- Admin Sub-tabs -->
+            <div class="grid grid-cols-3 gap-1.5 bg-cardBg p-1.5 rounded-2xl card-border text-xs font-bold text-center">
+                <button onclick="switchAdminSub('req')" id="adm-tab-req" class="py-2.5 rounded-xl bg-goldPrimary text-black">Requests</button>
+                <button onclick="switchAdminSub('rig')" id="adm-tab-rig" class="py-2.5 rounded-xl text-gray-400 hover:text-white">Win Control</button>
+                <button onclick="switchAdminSub('game')" id="adm-tab-game" class="py-2.5 rounded-xl text-gray-400 hover:text-white">Add Game</button>
+            </div>
+
+            <!-- Requests Section -->
+            <div id="adm-sec-req" class="space-y-3">
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-cardBg card-border p-3 rounded-xl text-center">
+                        <p class="text-[10px] text-gray-400">Total Users</p>
+                        <p id="admin-stat-users" class="text-lg font-extrabold text-white mt-0.5">0</p>
+                    </div>
+                    <div class="bg-cardBg card-border p-3 rounded-xl text-center">
+                        <p class="text-[10px] text-gray-400">Pending Dep</p>
+                        <p id="admin-stat-dep" class="text-lg font-extrabold text-goldPrimary mt-0.5">0</p>
+                    </div>
+                    <div class="bg-cardBg card-border p-3 rounded-xl text-center">
+                        <p class="text-[10px] text-gray-400">Pending With</p>
+                        <p id="admin-stat-with" class="text-lg font-extrabold text-vipRed mt-0.5">0</p>
+                    </div>
+                </div>
+
+                <div class="bg-cardBg card-border rounded-2xl p-4 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-tasks text-goldPrimary"></i> Live Deposit & Withdrawal Requests
+                    </h3>
+                    <div id="admin-requests-list" class="space-y-3 text-xs"></div>
+                </div>
+            </div>
+
+            <!-- Win Control Section -->
+            <div id="adm-sec-rig" class="space-y-3 hidden">
+                <div class="bg-cardBg card-border rounded-2xl p-4 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-magic text-goldPrimary"></i> Color Trading Win Rig / Control
+                    </h3>
+                    <p class="text-xs text-gray-400">Select exact winning number/outcome for the next round:</p>
+                    <div class="space-y-3">
+                        <select id="admin-rig-select" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                            <option value="random">Random (Normal)</option>
+                            <option value="0">0 (Small, Red/Violet)</option>
+                            <option value="1">1 (Small, Green)</option>
+                            <option value="2">2 (Small, Red)</option>
+                            <option value="3">3 (Small, Green)</option>
+                            <option value="4">4 (Small, Red)</option>
+                            <option value="5">5 (Big, Green/Violet)</option>
+                            <option value="6">6 (Big, Red)</option>
+                            <option value="7">7 (Big, Green)</option>
+                            <option value="8">8 (Big, Red)</option>
+                            <option value="9">9 (Big, Green)</option>
+                        </select>
+                        <button onclick="saveAdminRig()" class="w-full py-3 rounded-xl gold-gradient text-black font-extrabold text-xs shadow">
+                            APPLY WIN RESULT FOR NEXT ROUND
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add New Game Section -->
+            <div id="adm-sec-game" class="space-y-3 hidden">
+                <div class="bg-cardBg card-border rounded-2xl p-4 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-goldPrimary"></i> Add New Game via HTML Code
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Game Title</label>
+                            <input type="text" id="admin-new-game-title" placeholder="e.g. Lucky Dice / Aviator Mini" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-goldPrimary">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">HTML / CSS / JS Code</label>
+                            <textarea id="admin-new-game-code" rows="6" placeholder="<div>Your HTML & JS code here...</div>" class="w-full bg-darkBg border border-gray-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono outline-none focus:border-goldPrimary"></textarea>
+                        </div>
+                        <button onclick="handleAddNewGame()" class="w-full py-3 rounded-xl gold-gradient text-black font-extrabold text-xs shadow">
+                            PUBLISH NEW GAME TO CLOUD
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
+        <nav class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[480px] bg-[#141824]/95 backdrop-blur-md border-t border-gray-800 px-2 py-2 flex justify-around items-center z-40">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex flex-col items-center gap-1 text-goldPrimary">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-[10px] font-bold">Home</span>
+            </button>
+            <button onclick="switchTab('game')" id="nav-game" class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-white">
+                <i class="fas fa-gamepad text-lg"></i>
+                <span class="text-[10px] font-semibold">Win Go</span>
+            </button>
+            <button onclick="switchTab('customGames')" id="nav-customGames" class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-white">
+                <i class="fas fa-cubes text-lg"></i>
+                <span class="text-[10px] font-semibold">Custom</span>
+            </button>
+            <button onclick="switchTab('wallet')" id="nav-wallet" class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-white">
+                <i class="fas fa-wallet text-lg"></i>
+                <span class="text-[10px] font-semibold">Wallet</span>
+            </button>
+            <button onclick="switchTab('promo')" id="nav-promo" class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-white">
+                <i class="fas fa-gift text-lg"></i>
+                <span class="text-[10px] font-semibold">Invite</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- ==================== GORGEOUS ADMIN PASSWORD MODAL ==================== -->
+    <div id="admin-password-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-modal w-full max-w-[360px] rounded-3xl p-6 text-center space-y-5 shadow-2xl relative animate-scale-up">
+            <button onclick="closeAdminPasswordModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl gold-gradient text-black text-3xl font-extrabold shadow-lg mx-auto">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-extrabold gold-text">Admin Portal Access</h3>
+                <p class="text-xs text-gray-300 mt-1.5 font-medium">Enter Your Admin Panel Password</p>
+            </div>
+            <form onsubmit="verifyAdminPassword(event)" class="space-y-3">
+                <input type="password" id="admin-pwd-input" required placeholder="Enter Admin Panel Password" class="w-full bg-darkBg border border-goldPrimary/50 focus:border-goldPrimary rounded-xl px-4 py-3 text-sm text-center text-goldPrimary font-mono outline-none">
+                <button type="submit" class="w-full py-3.5 rounded-xl gold-gradient text-black font-extrabold text-sm tracking-wide shadow-lg">
+                    ACCESS ADMIN PANEL
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== BET PLACEMENT MODAL ==================== -->
+    <div id="bet-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center">
+        <div class="bg-cardBg border-t sm:border border-goldPrimary/40 w-full max-w-[480px] rounded-t-3xl sm:rounded-3xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <div>
+                    <span class="text-xs text-gray-400">Select Bet Option</span>
+                    <h3 class="text-lg font-extrabold text-white">Join <span id="modal-bet-target" class="text-goldPrimary">Green</span></h3>
+                </div>
+                <button onclick="closeBetModal()" class="w-8 h-8 rounded-full bg-darkBg text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div>
+                <label class="text-xs text-gray-400 block mb-2">Contract Amount (PKR)</label>
+                <div class="grid grid-cols-4 gap-2 mb-3">
+                    <button type="button" onclick="setBetAmount(10)" class="py-2 rounded-xl bg-darkBg border border-gray-700 text-xs font-bold text-white">Rs. 10</button>
+                    <button type="button" onclick="setBetAmount(50)" class="py-2 rounded-xl bg-darkBg border border-gray-700 text-xs font-bold text-white">Rs. 50</button>
+                    <button type="button" onclick="setBetAmount(100)" class="py-2 rounded-xl bg-darkBg border border-gray-700 text-xs font-bold text-white">Rs. 100</button>
+                    <button type="button" onclick="setBetAmount(500)" class="py-2 rounded-xl bg-darkBg border border-gray-700 text-xs font-bold text-white">Rs. 500</button>
+                </div>
+                <input type="number" id="bet-amount-input" value="50" min="10" class="w-full bg-darkBg border border-goldPrimary/50 rounded-xl px-4 py-3 text-base font-bold text-goldPrimary outline-none">
+            </div>
+
+            <div class="flex justify-between text-xs text-gray-400 bg-darkBg p-3 rounded-xl">
+                <span>Potential Win (<span id="modal-multiplier">2</span>x):</span>
+                <span class="font-bold text-vipGreen">Rs. <span id="modal-potential-win">100.00</span></span>
+            </div>
+
+            <button onclick="confirmPlaceBet()" class="w-full py-3.5 rounded-xl gold-gradient text-black font-extrabold text-sm shadow-lg">
+                CONFIRM BET
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 24/7 AI SUPPORT CHAT MODAL ==================== -->
+    <div id="ai-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-vipGreen/40 w-full max-w-[440px] h-[580px] rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+            <div class="bg-darkBg border-b border-gray-800 p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-vipGreen/20 text-vipGreen flex items-center justify-center text-xl font-extrabold shadow">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">92 TEAM Multilingual AI</h3>
+                        <p class="text-[10px] text-vipGreen flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-vipGreen animate-ping"></span> Roman Urdu, Urdu & English
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeAiAssistantModal()" class="w-8 h-8 rounded-full bg-cardLight text-gray-400 hover:text-white flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-[#07090d]">
+                <div class="flex gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-vipGreen text-black flex items-center justify-center font-bold shrink-0">AI</div>
+                    <div class="bg-cardLight border border-gray-800 text-gray-200 p-3 rounded-2xl rounded-tl-xs max-w-[80%] leading-relaxed">
+                        Assalam-o-Alaikum! Main 92 TEAM ka 24/7 AI Assistant hoon. Aap mujh se Roman Urdu, Urdu ya English mein kuch bhi pooch sakte hain (jaise: "deposit kaise karein?", "withdrawal kitni der mein milta hai?").
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-darkBg border-t border-gray-800 flex items-center gap-2">
+                <input type="text" id="ai-chat-input" placeholder="Kuch bhi poochien (Roman Urdu / Urdu / English)..." class="flex-1 bg-cardBg border border-gray-700 focus:border-vipGreen rounded-xl px-3.5 py-2.5 text-xs text-white outline-none" onkeypress="if(event.key==='Enter')sendAiMessage()">
+                <button onclick="sendAiMessage()" class="w-10 h-10 rounded-xl bg-vipGreen hover:bg-emerald-600 text-black font-bold flex items-center justify-center shadow">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ==================== FIREBASE & APP LOGIC ==================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : '92team-default-app';
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+    let app, db, auth, currentUserUid = null;
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+    } catch (e) {
+        console.error("Firebase init error:", e);
+    }
+
+    window.cloudUsers = {};
+    window.cloudTransactions = [];
+    window.cloudBets = [];
+    window.cloudGameHistory = [];
+    window.cloudCustomGames = [];
+
+    async function initFirebaseSync() {
+        if (!auth) return;
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+            currentUserUid = auth.currentUser?.uid || 'anon-' + Math.random();
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'users'), (snapshot) => {
+                window.cloudUsers = {};
+                snapshot.forEach(docSnap => {
+                    window.cloudUsers[docSnap.id] = docSnap.data();
+                });
+                checkAndSyncSessionUser();
+                refreshAllUI();
+            }, (err) => console.debug("Users listener error:", err));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'transactions'), (snapshot) => {
+                const txs = [];
+                snapshot.forEach(docSnap => {
+                    txs.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.cloudTransactions = txs.sort((a, b) => b.timestamp - a.timestamp);
+                refreshAllUI();
+            }, (err) => console.debug("Txs listener error:", err));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'bets'), (snapshot) => {
+                const bets = [];
+                snapshot.forEach(docSnap => {
+                    bets.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.cloudBets = bets.sort((a, b) => b.timestamp - a.timestamp);
+                refreshAllUI();
+            }, (err) => console.debug("Bets listener error:", err));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'game_history'), (snapshot) => {
+                const hist = [];
+                snapshot.forEach(docSnap => {
+                    hist.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.cloudGameHistory = hist.sort((a, b) => b.period - a.period);
+                refreshAllUI();
+            }, (err) => console.debug("History listener error:", err));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'custom_games'), (snapshot) => {
+                const games = [];
+                snapshot.forEach(docSnap => {
+                    games.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.cloudCustomGames = games;
+                refreshCustomGamesList();
+            }, (err) => console.debug("Custom games listener error:", err));
+
+        } catch (e) {
+            console.error("Firebase auth/sync error:", e);
+        }
+    }
+
+    window.saveUserToCloud = async (userData) => {
+        if (!db) return;
+        try {
+            const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', userData.phone);
+            await setDoc(userRef, userData, { merge: true });
+        } catch (e) {
+            console.error("Save user error:", e);
+        }
+    };
+
+    window.addTransactionToCloud = async (txData) => {
+        if (!db) return;
+        try {
+            const txId = 'TX' + Date.now() + Math.floor(Math.random()*1000);
+            const txRef = doc(db, 'artifacts', appId, 'public', 'data', 'transactions', txId);
+            await setDoc(txRef, { id: txId, timestamp: Date.now(), ...txData });
+        } catch (e) { console.error(e); }
+    };
+
+    window.updateTransactionStatusInCloud = async (txId, status) => {
+        if (!db) return;
+        try {
+            const txRef = doc(db, 'artifacts', appId, 'public', 'data', 'transactions', txId);
+            await updateDoc(txRef, { status: status });
+        } catch (e) { console.error(e); }
+    };
+
+    window.updateUserBalanceInCloud = async (phone, newBalance) => {
+        if (!db) return;
+        try {
+            const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', phone);
+            await updateDoc(userRef, { balance: newBalance });
+        } catch (e) { console.error(e); }
+    };
+
+    window.addBetToCloud = async (betData) => {
+        if (!db) return;
+        try {
+            const betId = 'BET' + Date.now() + Math.floor(Math.random()*1000);
+            const betRef = doc(db, 'artifacts', appId, 'public', 'data', 'bets', betId);
+            await setDoc(betRef, { id: betId, timestamp: Date.now(), ...betData });
+        } catch (e) { console.error(e); }
+    };
+
+    window.saveGameHistoryToCloud = async (histData) => {
+        if (!db) return;
+        try {
+            const histRef = doc(db, 'artifacts', appId, 'public', 'data', 'game_history', histData.period);
+            await setDoc(histRef, histData);
+        } catch (e) { console.error(e); }
+    };
+
+    window.addCustomGameToCloud = async (gameData) => {
+        if (!db) return;
+        try {
+            const gameId = 'GAME' + Date.now();
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'custom_games', gameId);
+            await setDoc(gameRef, { id: gameId, ...gameData });
+        } catch (e) { console.error(e); }
+    };
+
+    function checkAndSyncSessionUser() {
+        const activePhone = localStorage.getItem('92team_logged_phone');
+        if (activePhone && window.cloudUsers[activePhone]) {
+            const sessionUser = window.cloudUsers[activePhone];
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-interface').classList.remove('hidden');
+            document.getElementById('sidebar-user-name').textContent = sessionUser.name;
+            document.getElementById('sidebar-user-phone').textContent = sessionUser.phone;
+        }
+    }
+
+    window.addEventListener('load', () => {
+        initFirebaseSync();
+        buildNumberGrid();
+        startGameClock();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('invitationCode');
+        if (code) {
+            document.getElementById('reg-invite').value = code;
+            switchAuthMode('register');
+        }
+
+        const activePhone = localStorage.getItem('92team_logged_phone');
+        if (activePhone) {
+            checkAndSyncSessionUser();
+        }
+    });
+</script>
+
+<!-- ==================== UI JAVASCRIPT LOGIC ==================== -->
+<script>
+    let toastTimeout;
+    function showToast(msg, type = 'info') {
+        const box = document.getElementById('toast-box');
+        const msgEl = document.getElementById('toast-msg');
+        const iconEl = document.getElementById('toast-icon');
+
+        msgEl.textContent = msg;
+        iconEl.className = type === 'success'
+            ? 'fas fa-check-circle text-vipGreen text-lg'
+            : type === 'error'
+            ? 'fas fa-exclamation-circle text-vipRed text-lg'
+            : 'fas fa-info-circle text-goldPrimary text-lg';
+
+        box.classList.remove('hidden');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => box.classList.add('hidden'), 3000);
+    }
+
+    function toggleSidebar(open) {
+        const drawer = document.getElementById('sidebar-drawer');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (open) {
+            backdrop.classList.remove('hidden');
+            drawer.classList.remove('-translate-x-full');
+        } else {
+            drawer.classList.add('-translate-x-full');
+            backdrop.classList.add('hidden');
+        }
+    }
+
+    function openAiAssistantModal() {
+        document.getElementById('ai-modal').classList.remove('hidden');
+    }
+    function closeAiAssistantModal() {
+        document.getElementById('ai-modal').classList.add('hidden');
+    }
+
+    function promptAdminLogin() {
+        document.getElementById('admin-password-modal').classList.remove('hidden');
+    }
+    function closeAdminPasswordModal() {
+        document.getElementById('admin-password-modal').classList.add('hidden');
+    }
+    function verifyAdminPassword(e) {
+        e.preventDefault();
+        const pwd = document.getElementById('admin-pwd-input').value.trim();
+        if (pwd === "92_pkr1232") {
+            closeAdminPasswordModal();
+            showToast("Admin access granted.", "success");
+            switchTab('admin');
+        } else {
+            showToast("Incorrect Admin Password!", "error");
+        }
+    }
+
+    // ==================== MULTILINGUAL AI SUPPORT ====================
+    async function sendAiMessage() {
+        const inputEl = document.getElementById('ai-chat-input');
+        const text = inputEl.value.trim();
+        if (!text) return;
+
+        const chatBox = document.getElementById('ai-chat-messages');
+        chatBox.innerHTML += `
+            <div class="flex gap-2.5 justify-end">
+                <div class="bg-goldPrimary/20 border border-goldPrimary/40 text-white p-3 rounded-2xl rounded-tr-xs max-w-[80%] leading-relaxed">${escapeHtml(text)}</div>
+                <div class="w-7 h-7 rounded-lg gold-gradient text-black flex items-center justify-center font-bold shrink-0 text-xs">You</div>
+            </div>
+        `;
+        inputEl.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        const loadingId = 'ai-loading-' + Date.now();
+        chatBox.innerHTML += `
+            <div id="${loadingId}" class="flex gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-vipGreen text-black flex items-center justify-center font-bold shrink-0">AI</div>
+                <div class="bg-cardLight border border-gray-800 text-gray-400 p-3 rounded-2xl rounded-tl-xs">Soch raha hoon... / Thinking...</div>
+            </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const systemPrompt = "You are a friendly 24/7 multilingual support agent for '92 TEAM', a VIP color trading platform in Pakistan. JazzCash deposit number is 03286504660. Minimum withdrawal is Rs. 500. Reply in Roman Urdu, Urdu text, or English.";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: text }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                })
+            });
+
+            const result = await response.json();
+            const replyText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Main aapki kya madad kar sakta hoon?";
+
+            document.getElementById(loadingId).remove();
+            chatBox.innerHTML += `
+                <div class="flex gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-vipGreen text-black flex items-center justify-center font-bold shrink-0">AI</div>
+                    <div class="bg-cardLight border border-gray-800 text-gray-200 p-3 rounded-2xl rounded-tl-xs max-w-[80%] leading-relaxed">${escapeHtml(replyText)}</div>
+                </div>
+            `;
+        } catch (err) {
+            document.getElementById(loadingId).remove();
+            chatBox.innerHTML += `
+                <div class="flex gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-vipGreen text-black flex items-center justify-center font-bold shrink-0">AI</div>
+                    <div class="bg-cardLight border border-red-400 text-red-300 p-3 rounded-2xl rounded-tl-xs max-w-[80%]">JazzCash deposit ke liye 03286504660 par rakam bhejein aur TID enter karein.</div>
+                </div>
+            `;
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // ==================== AUTHENTICATION & REGISTRATION FIXED ====================
+    function switchAuthMode(mode) {
+        const loginForm = document.getElementById('login-form');
+        const regForm = document.getElementById('register-form');
+        const loginBtn = document.getElementById('tab-login-btn');
+        const regBtn = document.getElementById('tab-register-btn');
+
+        if (mode === 'login') {
+            loginForm.classList.remove('hidden');
+            regForm.classList.add('hidden');
+            loginBtn.className = 'py-2.5 text-sm font-bold rounded-lg gold-gradient text-black transition';
+            regBtn.className = 'py-2.5 text-sm font-bold rounded-lg text-gray-400 hover:text-white transition';
+        } else {
+            loginForm.classList.add('hidden');
+            regForm.classList.remove('hidden');
+            regBtn.className = 'py-2.5 text-sm font-bold rounded-lg gold-gradient text-black transition';
+            loginBtn.className = 'py-2.5 text-sm font-bold rounded-lg text-gray-400 hover:text-white transition';
+        }
+    }
+
+    window.handleRegister = async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+        const password = document.getElementById('reg-pass').value.trim();
+        const inviteCode = document.getElementById('reg-invite').value.trim();
+
+        if (window.cloudUsers[phone]) {
+            showToast('This mobile number is already registered!', 'error');
+            return;
+        }
+
+        const newUser = {
+            name,
+            phone,
+            password,
+            balance: 20, // Rs. 20 Signup Bonus
+            inviteCode: Math.floor(10000000000 + Math.random() * 90000000000).toString(),
+            referredBy: inviteCode || '46465332291',
+            commission: 0
+        };
+
+        // Instant local cache update to prevent any delay/stuck state
+        window.cloudUsers[phone] = newUser;
+
+        await window.saveUserToCloud(newUser);
+        localStorage.setItem('92team_logged_phone', phone);
+        showToast('Account created successfully! Rs. 20 Bonus added.', 'success');
+        enterApp(phone);
+    };
+
+    window.handleLogin = function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('login-phone').value.trim();
+        const password = document.getElementById('login-pass').value.trim();
+
+        const user = window.cloudUsers[phone];
+        if (!user || user.password !== password) {
+            showToast('Invalid mobile number or password!', 'error');
+            return;
+        }
+
+        localStorage.setItem('92team_logged_phone', phone);
+        showToast(`Welcome back, ${user.name}!`, 'success');
+        enterApp(phone);
+    };
+
+    window.quickDemoLogin = function(role) {
+        const phones = Object.keys(window.cloudUsers);
+        if (phones.length > 0) {
+            const phone = phones[0];
+            localStorage.setItem('92team_logged_phone', phone);
+            enterApp(phone);
+        } else {
+            showToast('No users found in cloud yet. Please register an account.', 'error');
+        }
+    };
+
+    window.handleLogout = function() {
+        localStorage.removeItem('92team_logged_phone');
+        document.getElementById('main-interface').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        showToast('Logged out successfully.');
+    };
+
+    function enterApp(phone) {
+        let user = window.cloudUsers[phone];
+        if (!user) {
+            user = { name: "User", phone: phone, balance: 20 };
+            window.cloudUsers[phone] = user;
+        }
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-interface').classList.remove('hidden');
+        document.getElementById('sidebar-user-name').textContent = user.name;
+        document.getElementById('sidebar-user-phone').textContent = user.phone;
+        refreshAllUI();
+    }
+
+    window.getCurrentUser = function() {
+        const phone = localStorage.getItem('92team_logged_phone');
+        if (!phone) return null;
+        return window.cloudUsers[phone] || null;
+    };
+
+    // ==================== NAVIGATION ====================
+    window.switchTab = function(tabName) {
+        ['dashboard', 'game', 'customGames', 'promo', 'wallet', 'admin'].forEach(v => {
+            const el = document.getElementById(`view-${v}`);
+            if (el) el.classList.add('hidden');
+        });
+        const target = document.getElementById(`view-${tabName}`);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.classList.remove('text-goldPrimary');
+            btn.classList.add('text-gray-400');
+        });
+        const activeNav = document.getElementById(`nav-${tabName}`);
+        if (activeNav) {
+            activeNav.classList.remove('text-gray-400');
+            activeNav.classList.add('text-goldPrimary');
+        }
+        refreshAllUI();
+    };
+
+    window.switchAdminSub = function(sub) {
+        ['req', 'rig', 'game'].forEach(s => {
+            document.getElementById(`adm-sec-${s}`).classList.add('hidden');
+            document.getElementById(`adm-tab-${s}`).className = 'py-2.5 rounded-xl text-gray-400 hover:text-white';
+        });
+        document.getElementById(`adm-sec-${sub}`).classList.remove('hidden');
+        document.getElementById(`adm-tab-${sub}`).className = 'py-2.5 rounded-xl bg-goldPrimary text-black font-bold';
+    };
+
+    // ==================== WIN GO GAME ENGINE ====================
+    let gameDuration = 30;
+    let timeLeft = 30;
+    let periodCounter = 20261113096;
+    let activeBetSelection = null;
+
+    function buildNumberGrid() {
+        const grid = document.getElementById('number-buttons-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        for (let i = 0; i <= 9; i++) {
+            let colorClass = i === 0 ? 'bg-gradient-to-br from-vipRed to-vipViolet' : i === 5 ? 'bg-gradient-to-br from-vipGreen to-vipViolet' : i % 2 === 1 ? 'bg-vipGreen' : 'bg-vipRed';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.onclick = () => openBetModal(`Number ${i}`, 'number', 9, i);
+            btn.className = `${colorClass} h-11 rounded-full font-extrabold text-white text-base shadow-md hover:scale-105 transition flex items-center justify-center border border-white/20`;
+            btn.textContent = i;
+            grid.appendChild(btn);
+        }
+    }
+
+    window.setGameDuration = function(sec) {
+        gameDuration = sec;
+        timeLeft = sec;
+        document.getElementById('game-mode-label').textContent = sec === 30 ? 'Win Go 30s' : 'Win Go 1 Min';
+        updateTimerDisplay();
+    };
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const secs = (timeLeft % 60).toString().padStart(2, '0');
+        document.getElementById('timer-min').textContent = mins;
+        document.getElementById('timer-sec').textContent = secs;
+        document.getElementById('period-id').textContent = periodCounter;
+
+        const overlay = document.getElementById('bet-lock-overlay');
+        if (timeLeft <= 5 && timeLeft > 0) {
+            overlay.classList.remove('hidden');
+            document.getElementById('lock-countdown').textContent = timeLeft;
+            closeBetModal();
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+
+    function startGameClock() {
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                resolveRound();
+                timeLeft = gameDuration;
+                periodCounter++;
+            }
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function getNumberColors(num) {
+        if (num === 0) return ['Red', 'Violet'];
+        if (num === 5) return ['Green', 'Violet'];
+        return num % 2 === 1 ? ['Green'] : ['Red'];
+    }
+
+    async function resolveRound() {
+        let winningNumber;
+        const rigVal = localStorage.getItem('92team_rig_number');
+        if (rigVal !== null && rigVal !== undefined && rigVal !== 'random') {
+            winningNumber = parseInt(rigVal);
+            localStorage.removeItem('92team_rig_number');
+        } else {
+            winningNumber = Math.floor(Math.random() * 10);
+        }
+
+        const winningColors = getNumberColors(winningNumber);
+        const currentPeriod = periodCounter.toString();
+
+        await window.saveGameHistoryToCloud({
+            period: currentPeriod,
+            number: winningNumber,
+            colors: winningColors,
+            timestamp: Date.now()
+        });
+
+        window.cloudBets.forEach(async b => {
+            if (b.period === currentPeriod && b.status === 'pending') {
+                let isWin = false;
+                const winSize = winningNumber >= 5 ? 'Big' : 'Small';
+                const winColorStr = winningColors.join('/');
+
+                if (b.targetLabel.includes('Number') && b.targetLabel.includes(winningNumber.toString())) isWin = true;
+                if (b.targetLabel === 'Green' && winColorStr.includes('Green')) isWin = true;
+                if (b.targetLabel === 'Red' && winColorStr.includes('Red')) isWin = true;
+                if (b.targetLabel === 'Violet' && winColorStr.includes('Violet')) isWin = true;
+                if (b.targetLabel === 'Big' && winSize === 'Big') isWin = true;
+                if (b.targetLabel === 'Small' && winSize === 'Small') isWin = true;
+
+                if (isWin) {
+                    const payout = b.amount * b.multiplier;
+                    const u = window.cloudUsers[b.userId];
+                    if (u) {
+                        await window.updateUserBalanceInCloud(b.userId, u.balance + payout);
+                    }
+                }
+            }
+        });
+    }
+
+    window.openBetModal = function(label, type, multiplier, numericVal = null) {
+        activeBetSelection = { label, type, multiplier, numericVal };
+        document.getElementById('modal-bet-target').textContent = label;
+        document.getElementById('modal-multiplier').textContent = multiplier;
+        document.getElementById('bet-amount-input').value = 50;
+        document.getElementById('bet-modal').classList.remove('hidden');
+    };
+
+    window.closeBetModal = function() {
+        document.getElementById('bet-modal').classList.add('hidden');
+    };
+
+    window.setBetAmount = function(amt) {
+        document.getElementById('bet-amount-input').value = amt;
+    };
+
+    window.confirmPlaceBet = async function() {
+        const user = window.getCurrentUser();
+        if (!user || !activeBetSelection) return;
+
+        const amount = parseFloat(document.getElementById('bet-amount-input').value);
+        if (isNaN(amount) || amount < 10) {
+            showToast('Minimum bet is Rs. 10', 'error');
+            return;
+        }
+        if (user.balance < amount) {
+            showToast('Insufficient wallet balance!', 'error');
+            return;
+        }
+
+        const newBal = user.balance - amount;
+        await window.updateUserBalanceInCloud(user.phone, newBal);
+
+        await window.addBetToCloud({
+            userId: user.phone,
+            userName: user.name,
+            period: periodCounter.toString(),
+            targetLabel: activeBetSelection.label,
+            amount: amount,
+            multiplier: activeBetSelection.multiplier,
+            status: 'pending'
+        });
+
+        closeBetModal();
+        showToast(`Bet of Rs. ${amount} placed successfully!`, 'success');
+        refreshAllUI();
+    };
+
+    window.switchHistoryTab = function(tab) {
+        const gameContainer = document.getElementById('game-history-container');
+        const myContainer = document.getElementById('my-bets-container');
+        const btnGame = document.getElementById('hist-tab-game');
+        const btnMy = document.getElementById('hist-tab-my');
+
+        if (tab === 'game') {
+            gameContainer.classList.remove('hidden');
+            myContainer.classList.add('hidden');
+            btnGame.className = 'py-3 text-xs font-bold text-goldPrimary border-b-2 border-goldPrimary bg-cardLight/50';
+            btnMy.className = 'py-3 text-xs font-bold text-gray-400 hover:text-white';
+        } else {
+            gameContainer.classList.add('hidden');
+            myContainer.classList.remove('hidden');
+            btnMy.className = 'py-3 text-xs font-bold text-goldPrimary border-b-2 border-goldPrimary bg-cardLight/50';
+            btnGame.className = 'py-3 text-xs font-bold text-gray-400 hover:text-white';
+        }
+    };
+
+    // ==================== WALLET & TRANSACTIONS ====================
+    window.openWalletSub = function(sub) {
+        const depBox = document.getElementById('wallet-deposit-box');
+        const withBox = document.getElementById('wallet-withdraw-box');
+        const btnDep = document.getElementById('wallet-btn-deposit');
+        const btnWith = document.getElementById('wallet-btn-withdraw');
+
+        if (sub === 'deposit') {
+            depBox.classList.remove('hidden');
+            withBox.classList.add('hidden');
+            btnDep.className = 'flex-1 py-2.5 rounded-xl bg-black text-goldPrimary font-bold text-xs shadow';
+            btnWith.className = 'flex-1 py-2.5 rounded-xl bg-black/20 text-black font-bold text-xs';
+        } else {
+            depBox.classList.add('hidden');
+            withBox.classList.remove('hidden');
+            btnWith.className = 'flex-1 py-2.5 rounded-xl bg-black text-goldPrimary font-bold text-xs shadow';
+            btnDep.className = 'flex-1 py-2.5 rounded-xl bg-black/20 text-black font-bold text-xs';
+        }
+    };
+
+    window.copyAdminAccount = function() {
+        navigator.clipboard?.writeText("03286504660");
+        showToast('JazzCash number 03286504660 copied!', 'success');
+    };
+
+    window.handleDepositSubmit = async function(e) {
+        e.preventDefault();
+        const user = window.getCurrentUser();
+        const amount = parseFloat(document.getElementById('dep-amount').value);
+        const tid = document.getElementById('dep-tid').value.trim();
+
+        if (!user || amount < 100) {
+            showToast('Minimum deposit is Rs. 100', 'error');
+            return;
+        }
+
+        await window.addTransactionToCloud({
+            userId: user.phone,
+            userName: user.name,
+            type: 'deposit',
+            method: 'JazzCash',
+            amount: amount,
+            accountInfo: `TID: ${tid}`,
+            status: 'pending'
+        });
+
+        document.getElementById('dep-amount').value = '';
+        document.getElementById('dep-tid').value = '';
+        showToast('Deposit request submitted! Admin will approve shortly.', 'success');
+    };
+
+    window.handleWithdrawSubmit = async function(e) {
+        e.preventDefault();
+        const user = window.getCurrentUser();
+        const name = document.getElementById('with-name').value.trim();
+        const account = document.getElementById('with-account').value.trim();
+        const amount = parseFloat(document.getElementById('with-amount').value);
+
+        if (!user || amount < 500) {
+            showToast('Minimum withdrawal is Rs. 500', 'error');
+            return;
+        }
+        if (user.balance < amount) {
+            showToast('Insufficient balance!', 'error');
+            return;
+        }
+
+        await window.updateUserBalanceInCloud(user.phone, user.balance - amount);
+        await window.addTransactionToCloud({
+            userId: user.phone,
+            userName: user.name,
+            type: 'withdraw',
+            method: 'JazzCash',
+            amount: amount,
+            accountInfo: `${name} (${account})`,
+            status: 'pending'
+        });
+
+        document.getElementById('with-amount').value = '';
+        showToast('Withdrawal request submitted!', 'success');
+    };
+
+    window.adminHandleTx = async function(txId, action, userId, amount, type) {
+        await window.updateTransactionStatusInCloud(txId, action === 'approve' ? 'approved' : 'rejected');
+        if (action === 'approve' && type === 'deposit') {
+            const targetUser = window.cloudUsers[userId];
+            if (targetUser) {
+                await window.updateUserBalanceInCloud(userId, targetUser.balance + amount);
+            }
+        } else if (action === 'reject' && type === 'withdraw') {
+            const targetUser = window.cloudUsers[userId];
+            if (targetUser) {
+                await window.updateUserBalanceInCloud(userId, targetUser.balance + amount);
+            }
+        }
+        showToast(`Transaction ${action}d successfully!`, 'success');
+    };
+
+    window.saveAdminRig = function() {
+        const val = document.getElementById('admin-rig-select').value;
+        localStorage.setItem('92team_rig_number', val);
+        showToast(`Next round winning result set to: ${val}`, 'success');
+    };
+
+    window.handleAddNewGame = async function() {
+        const title = document.getElementById('admin-new-game-title').value.trim();
+        const code = document.getElementById('admin-new-game-code').value.trim();
+
+        if (!title || !code) {
+            showToast('Please enter game title and HTML/JS code.', 'error');
+            return;
+        }
+
+        await window.addCustomGameToCloud({ title, code });
+        document.getElementById('admin-new-game-title').value = '';
+        document.getElementById('admin-new-game-code').value = '';
+        showToast('New custom game published successfully!', 'success');
+    };
+
+    function refreshCustomGamesList() {
+        const listEl = document.getElementById('custom-games-list');
+        if (!listEl) return;
+        if (!window.cloudCustomGames || window.cloudCustomGames.length === 0) {
+            listEl.innerHTML = `<div class="bg-cardBg card-border p-6 rounded-2xl text-center text-gray-400 text-xs">No custom games published yet. Admin can add games from Admin Panel.</div>`;
+            return;
+        }
+
+        listEl.innerHTML = window.cloudCustomGames.map((g, idx) => `
+            <div class="bg-cardBg card-border p-4 rounded-2xl flex items-center justify-between">
+                <div>
+                    <h4 class="font-bold text-white text-sm">${g.title}</h4>
+                    <p class="text-[11px] text-gray-400">Custom HTML Game</p>
+                </div>
+                <button onclick="playCustomGame('${g.id}')" class="px-4 py-2 rounded-xl gold-gradient text-black font-bold text-xs shadow">Play Now</button>
+            </div>
+        `).join('');
+    }
+
+    window.playCustomGame = function(gameId) {
+        const game = window.cloudCustomGames.find(g => g.id === gameId);
+        if (!game) return;
+        document.getElementById('playGameTitle').textContent = game.title;
+        document.getElementById('playGameContainer').innerHTML = game.code;
+        document.getElementById('playCustomGameModal').classList.remove('hidden');
+    };
+
+    window.closePlayCustomGame = function() {
+        document.getElementById('playCustomGameModal').classList.add('hidden');
+        document.getElementById('playGameContainer').innerHTML = '';
+    };
+
+    window.refreshAllUI = function() {
+        const user = window.getCurrentUser();
+        if (!user) return;
+
+        const balFormatted = user.balance.toFixed(2);
+        document.getElementById('header-balance').textContent = balFormatted;
+        document.getElementById('dash-main-bal').textContent = balFormatted;
+        document.getElementById('wallet-main-balance').textContent = balFormatted;
+
+        const allUsersArr = Object.values(window.cloudUsers);
+        const myTeam = allUsersArr.filter(u => u.referredBy === user.inviteCode);
+        document.getElementById('promo-team-count').textContent = myTeam.length;
+        document.getElementById('promo-commission').textContent = (user.commission || 0).toFixed(0);
+        document.getElementById('user-invite-code').textContent = user.inviteCode;
+        const baseUrl = window.location.href.split('?')[0].split('#')[0];
+        document.getElementById('user-invite-link').value = `${baseUrl}?invitationCode=${user.inviteCode}`;
+
+        const histBody = document.getElementById('game-history-body');
+        if (histBody) {
+            histBody.innerHTML = window.cloudGameHistory.slice(0, 10).map(row => {
+                const numColor = row.colors?.includes('Green') ? 'text-vipGreen' : 'text-vipRed';
+                const dots = row.colors?.map(c => `<span class="inline-block w-3 h-3 rounded-full ${c === 'Green' ? 'bg-vipGreen' : c === 'Red' ? 'bg-vipRed' : 'bg-vipViolet'}"></span>`).join(' ') || '';
+                return `
+                    <tr>
+                        <td class="py-2.5 font-mono text-gray-300">${row.period}</td>
+                        <td class="py-2.5 text-center font-extrabold text-base ${numColor}">${row.number}</td>
+                        <td class="py-2.5 text-right space-x-1">${dots}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        const myBetsList = document.getElementById('my-bets-list');
+        if (myBetsList) {
+            const myBets = window.cloudBets.filter(b => b.userId === user.phone);
+            myBetsList.innerHTML = myBets.length === 0 ? '<p class="text-gray-500 text-xs text-center py-4">No bets placed yet.</p>' : myBets.slice(0, 15).map(b => `
+                <div class="flex items-center justify-between bg-darkBg p-2.5 rounded-xl border border-gray-800 text-xs">
+                    <div>
+                        <p class="font-bold text-white">${b.targetLabel} <span class="text-gray-500 font-mono text-[10px]">(#${b.period})</span></p>
+                        <p class="text-[11px] text-gray-400">Bet: Rs. ${b.amount}</p>
+                    </div>
+                    <span class="text-goldPrimary font-semibold uppercase">${b.status}</span>
+                </div>
+            `).join('');
+        }
+
+        const txContainer = document.getElementById('user-tx-history');
+        if (txContainer) {
+            const myTxs = window.cloudTransactions.filter(t => t.userId === user.phone);
+            txContainer.innerHTML = myTxs.length === 0 ? '<p class="text-gray-500 text-center py-3">No transactions found.</p>' : myTxs.map(t => `
+                <div class="bg-darkBg p-3 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div>
+                        <p class="font-bold text-white uppercase">${t.type} &bull; ${t.method}</p>
+                        <p class="text-[11px] text-gray-400">${t.accountInfo}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-extrabold text-sm text-white">Rs. ${t.amount}</p>
+                        <span class="text-[11px] font-bold uppercase ${t.status === 'approved' ? 'text-vipGreen' : t.status === 'rejected' ? 'text-vipRed' : 'text-goldPrimary'}">${t.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const pendingDeps = window.cloudTransactions.filter(t => t.type === 'deposit' && t.status === 'pending').length;
+        const pendingWiths = window.cloudTransactions.filter(t => t.type === 'withdraw' && t.status === 'pending').length;
+        document.getElementById('admin-stat-users').textContent = allUsersArr.length;
+        document.getElementById('admin-stat-dep').textContent = pendingDeps;
+        document.getElementById('admin-stat-with').textContent = pendingWiths;
+
+        const adminReqList = document.getElementById('admin-requests-list');
+        if (adminReqList) {
+            adminReqList.innerHTML = window.cloudTransactions.length === 0 ? '<p class="text-gray-500 text-center py-3">No pending requests.</p>' : window.cloudTransactions.map(t => {
+                const actionBtns = t.status === 'pending' ? `
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="adminHandleTx('${t.id}', 'approve', '${t.userId}', ${t.amount}, '${t.type}')" class="flex-1 py-1.5 rounded-lg bg-vipGreen text-white font-bold text-[11px]">Approve</button>
+                        <button onclick="adminHandleTx('${t.id}', 'reject', '${t.userId}', ${t.amount}, '${t.type}')" class="flex-1 py-1.5 rounded-lg bg-red-600 text-white font-bold text-[11px]">Reject</button>
+                    </div>
+                ` : `<span class="inline-block mt-1 text-[10px] uppercase font-bold ${t.status === 'approved' ? 'text-vipGreen' : 'text-red-400'}">${t.status}</span>`;
+
+                return `
+                    <div class="bg-darkBg p-3 rounded-xl border border-gray-800">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase ${t.type === 'deposit' ? 'bg-emerald-950 text-emerald-400' : 'bg-red-950 text-red-400'}">${t.type}</span>
+                                <span class="font-bold text-white ml-1">${t.userName}</span>
+                                <p class="text-[11px] text-gray-400 mt-1">${t.accountInfo}</p>
+                            </div>
+                            <span class="font-extrabold text-goldPrimary text-sm">Rs. ${t.amount}</span>
+                        </div>
+                        ${actionBtns}
+                    </div>
+                `;
+            }).join('');
+        }
+    };
+</script>
+
+</body>
+</html>
